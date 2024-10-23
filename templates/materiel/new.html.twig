@@ -3,6 +3,121 @@
 <h1>Créer un nouveau Materiel</h1>
 
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.prixHT) }}
+    {{ form_row(form.prixTTC) }}
+    {{ form_row(form.quantite) }}
+
+    <div>
+        {{ form_row(form.tva) }}
+        <button type="button" id="newTvaButton">Nouvelle TVA</button>
+    </div>
+
     <button type="submit">Enregistrer</button>
 {{ form_end(form) }}
+
+<!-- Popup Modal for new TVA -->
+<div id="newTvaModal" style="display:none;">
+    <div id="overlay"></div>
+    <div id="modalContent">
+        <h2>Créer une nouvelle TVA</h2>
+        <form id="newTvaForm" method="post" action="{{ path('tva_new') }}">
+            {{ form_start(newTvaForm) }}
+                {{ form_row(newTvaForm.libelle) }}
+                {{ form_row(newTvaForm.valeur) }}
+                <button type="submit">Ajouter</button>
+            {{ form_end(newTvaForm) }}
+        </form>
+    </div>
+</div>
+
+<script>
+// Fonction pour récupérer la TVA sélectionnée
+function getSelectedTva() {
+    var tvaSelect = document.querySelector('#materiel_tva');
+    var selectedOption = tvaSelect.options[tvaSelect.selectedIndex];
+
+    // Vérifie si aucune option n'est sélectionnée ou si l'option "placeholder" est sélectionnée
+    if (!selectedOption || selectedOption.value === "") {
+        return 0; // TVA par défaut à zéro
+    }
+
+    var tvaValue = parseFloat(selectedOption.getAttribute('data-tva')); // Utilise l'attribut data-tva
+    return tvaValue;
+}
+
+// Fonction pour calculer le prix TTC en fonction du prix HT et de la TVA
+function calculateTtc(prixHT, tva) {
+    return (parseFloat(prixHT) * (1 + tva / 100)).toFixed(2);
+}
+
+// Fonction pour calculer le prix HT en fonction du prix TTC et de la TVA
+function calculateHt(prixTTC, tva) {
+    return (parseFloat(prixTTC) / (1 + tva / 100)).toFixed(2);
+}
+
+// Ajouter les écouteurs d'événements
+document.querySelector('#materiel_prixHT').addEventListener('input', function() {
+    var prixHT = this.value;
+    var tva = getSelectedTva();
+    if (prixHT) {
+        document.querySelector('#materiel_prixTTC').value = calculateTtc(prixHT, tva);
+    }
+});
+
+document.querySelector('#materiel_prixTTC').addEventListener('input', function() {
+    var prixTTC = this.value;
+    var tva = getSelectedTva();
+    if (prixTTC) {
+        document.querySelector('#materiel_prixHT').value = calculateHt(prixTTC, tva);
+    }
+});
+
+document.querySelector('#materiel_tva').addEventListener('change', function() {
+    var prixHT = document.querySelector('#materiel_prixHT').value;
+    var prixTTC = document.querySelector('#materiel_prixTTC').value;
+    var tva = getSelectedTva();
+
+    if (prixHT) {
+        document.querySelector('#materiel_prixTTC').value = calculateTtc(prixHT, tva);
+    } else if (prixTTC) {
+        document.querySelector('#materiel_prixHT').value = calculateHt(prixTTC, tva);
+    }
+});
+
+document.getElementById('newTvaButton').addEventListener('click', function() {
+    document.getElementById('newTvaModal').style.display = 'block';
+});
+
+document.getElementById('newTvaForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var formData = new FormData(this);
+
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Fermer la modal après succès
+            document.getElementById('newTvaModal').style.display = 'none';
+
+            // Ajouter la nouvelle TVA à la liste déroulante
+            var tvaSelect = document.querySelector('#materiel_tva');
+            var newOption = new Option(`${data.libelle} (${data.valeur}%)`, data.id, true, true);
+            tvaSelect.add(newOption);
+
+            // Sélectionner la nouvelle TVA dans la liste
+            tvaSelect.value = data.id;
+        } else {
+            alert('Erreur lors de la création de la TVA');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la création de la TVA');
+    });
+});
+</script>

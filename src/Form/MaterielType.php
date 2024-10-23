@@ -33,6 +33,10 @@ class MaterielType extends AbstractType
                     // Affiche le libellé et la valeur dans la liste déroulante
                     return sprintf('%s (%.2f%%)', $tva->getLibelle(), $tva->getValeur());
                 },
+                'choice_attr' => function (Tva $tva) {
+                    // Ajoute l'attribut data-tva contenant la valeur de la TVA
+                    return ['data-tva' => $tva->getValeur()];
+                },
                 'placeholder' => 'Sélectionnez une TVA',
             ]);
         ;

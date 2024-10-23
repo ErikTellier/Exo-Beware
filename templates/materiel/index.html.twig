@@ -70,12 +70,8 @@
             <tr>
                 <th style="display:none;">ID</th> <!-- Colonne cachée pour l'ID -->
                 <th>Nom</th>
-                <th>Prix HT</th>
                 <th>Prix TTC</th>
-                <th>TVA Libelle</th>
-                <th>TVA Valeur</th>
                 <th>Quantité</th>
-                <th>Date de création</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -100,12 +96,8 @@
                 "columns": [
                     { "data": "id", "visible": false },
                     { "data": "nom" },
-                    { "data": "prixHT" , "type": "num" },
                     { "data": "prixTTC" , "type": "num" },
-                    { "data": "tvaLibelle" },  // Column for TVA libelle
-                    { "data": "tvaValeur", "type": "num"  },
                     { "data": "quantite" , "type": "num" },
-                    { "data": "creationDate", "type": "date"  },
                     {   // Add buttons for each row
                         "data": null,
                         "orderable": false,  // Désactive le tri
@@ -129,29 +121,35 @@
 
 
         // Event handler for view button
-            $(document).on('click', '.view-btn', function() {
-                var rowId = $(this).data('id');
-                // Fetch row data and show modal
-                $.ajax({
-                    url: '{{ path('materiel_data') }}',
-                    method: 'GET',
-                    success: function(response) {
-                        var rowData = response.data.find(item => item.nom === rowId);
-                        var details = `
-                            <p>Nom: ${rowData.nom}</p>
-                            <p>Prix HT: ${rowData.prixHT}</p>
-                            <p>Prix TTC: ${rowData.prixTTC}</p>
-                            <p>TVA Libelle: ${rowData.tvaLibelle}</p>
-                            <p>TVA Valeur: ${rowData.tvaValeur}</p>
-                            <p>Quantité: ${rowData.quantite}</p>
-                            <p>Date de création: ${rowData.creationDate}</p>
-                        `;
-                        $('#materielDetails').html(details);
-                        $('#overlay').show();
-                        $('#materielModal').show();
-                    }
-                });
+        $(document).on('click', '.view-btn', function() {
+            var materielId = $(this).data('id'); // Récupère l'ID du matériel depuis l'attribut data-id
+
+            // Effectue une requête Ajax pour récupérer les détails de l'élément spécifique
+            $.ajax({
+                url: `/materiel/${materielId}`, // URL pour récupérer les données de l'élément avec cet ID
+                method: 'GET',
+                success: function(response) {
+                    var rowData = response; // Assure-toi que le serveur retourne les détails d'un seul élément
+
+                    // Créer le contenu à afficher dans la popup
+                    var details = `
+                        <p>Nom: ${rowData.nom}</p>
+                        <p>Prix HT: ${rowData.prixHT}</p>
+                        <p>Prix TTC: ${rowData.prixTTC}</p>
+                        <p>TVA Libelle: ${rowData.tvaLibelle}</p>
+                        <p>TVA Valeur: ${rowData.tvaValeur}</p>
+                        <p>Quantité: ${rowData.quantite}</p>
+                        <p>Date de création: ${rowData.creationDate}</p>
+                    `;
+                    $('#materielDetails').html(details); // Injecter les détails dans la modal
+                    $('#overlay').show();
+                    $('#materielModal').show();
+                },
+                error: function() {
+                    alert('Erreur lors de la récupération des données du matériel.');
+                }
             });
+        });
 
             // Close modal
             $('#closeModal').click(function() {

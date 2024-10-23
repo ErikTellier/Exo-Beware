@@ -157,4 +157,19 @@ class MaterielController extends AbstractController
             'newTvaForm' => $newTvaForm->createView(), // Passer le formulaire de TVA à la vue
         ]);
     }
+
+    #[Route('/materiel/{id}', name: 'materiel_show', methods: ['GET'])]
+    public function show(Materiel $materiel): JsonResponse
+    {
+        // Retourne les données de l'élément en format JSON
+        return new JsonResponse([
+            'nom' => $materiel->getNom(),
+            'prixHT' => $materiel->getPrixHT(),
+            'prixTTC' => $materiel->getPrixTTC(),
+            'tvaLibelle' => $materiel->getTva()->getLibelle(),
+            'tvaValeur' => $materiel->getTva()->getValeur(),
+            'quantite' => $materiel->getQuantite(),
+            'creationDate' => $materiel->getCreationDate()->format('Y-m-d H:i:s')
+        ]);
+    }
 }

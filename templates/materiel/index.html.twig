@@ -3,17 +3,77 @@
 <head>
     <title>Materiel List</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.0/css/jquery.dataTables.min.css">
+<style>
+        /* Style for the background overlay */
+        #overlay {
+            position: fixed;
+            display: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 9998;
+        }
+
+        /* Style for the modal */
+        #materielModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        /* Style for close button */
+        #closeModal {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #closeModal:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
 </head>
 <body>
     <h1>Materiel List</h1>
     <table id="materielTable" class="display">
         <thead>
             <tr>
+                <th style="display:none;">ID</th> <!-- Colonne cachée pour l'ID -->
                 <th>Nom</th>
+                <th>Prix HT</th>
+                <th>Prix TTC</th>
+                <th>TVA Libelle</th>
+                <th>TVA Valeur</th>
+                <th>Quantité</th>
+                <th>Date de création</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+
+    <div id="overlay"></div>
+
+    <div id="materielModal" style="display:none;">
+        <div id="materielDetails"></div>
+        <button id="closeModal">Close</button>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.0/js/jquery.dataTables.min.js"></script>
@@ -24,7 +84,24 @@
                 "serverSide": true,
                 "ajax": "{{ path('materiel_data') }}",
                 "columns": [
-                    { "data": "nom" }
+                    { "data": "id", "visible": false },
+                    { "data": "nom" },
+                    { "data": "prixHT" },
+                    { "data": "prixTTC" },
+                    { "data": "tvaLibelle" },  // Column for TVA libelle
+                    { "data": "tvaValeur" },
+                    { "data": "quantite" },
+                    { "data": "creationDate" },
+                    {   // Add buttons for each row
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `
+                                <button class="view-btn" data-id="${data.nom}">Voir</button>
+                                <button class="edit-btn" data-id="${data.nom}">Modifier</button>
+                                <button class="decrement-btn" data-id="${data.id}">Décrémenter</button>
+                            `;
+                        }
+                    }
                 ],
                 "searching": false,         // Disable the search box
                 "lengthChange": false,      // Disable the "Show X entries" dropdown
@@ -32,6 +109,58 @@
                 "info": false               // Disable the "Showing X to Y of Z entries" info
             });
         });
+
+        // Event handler for view button
+            $(document).on('click', '.view-btn', function() {
+                var rowId = $(this).data('id');
+                // Fetch row data and show modal
+                $.ajax({
+                    url: '{{ path('materiel_data') }}',
+                    method: 'GET',
+                    success: function(response) {
+                        var rowData = response.data.find(item => item.nom === rowId);
+                        var details = `
+                            <p>Nom: ${rowData.nom}</p>
+                            <p>Prix HT: ${rowData.prixHT}</p>
+                            <p>Prix TTC: ${rowData.prixTTC}</p>
+                            <p>TVA Libelle: ${rowData.tvaLibelle}</p>
+                            <p>TVA Valeur: ${rowData.tvaValeur}</p>
+                            <p>Quantité: ${rowData.quantite}</p>
+                            <p>Date de création: ${rowData.creationDate}</p>
+                        `;
+                        $('#materielDetails').html(details);
+                        $('#overlay').show();
+                        $('#materielModal').show();
+                    }
+                });
+            });
+
+            // Close modal
+            $('#closeModal').click(function() {
+                $('#overlay').hide();
+                $('#materielModal').hide();
+            });
+
+            // Event handler for edit button (does nothing for now)
+            $(document).on('click', '.edit-btn', function() {
+                alert('Edit button clicked. Functionality not yet implemented.');
+            });
+
+            // Gestion du bouton de décrémentation
+            $(document).on('click', '.decrement-btn', function() {
+                var materielId = $(this).data('id');
+                $.ajax({
+                    url: `/decrement/${materielId}`,
+                    method: 'POST',
+                    success: function() {
+                        // Rafraîchir le tableau après décrémentation
+                        $('#materielTable').DataTable().ajax.reload();
+                    },
+                    error: function() {
+                        alert("Erreur lors de la décrémentation du stock.");
+                    }
+                });
+            });
     </script>
 </body>
 </html>

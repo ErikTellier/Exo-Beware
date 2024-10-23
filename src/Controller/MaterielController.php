@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class MaterielController extends AbstractController
 {
@@ -170,6 +172,37 @@ class MaterielController extends AbstractController
             'tvaValeur' => $materiel->getTva()->getValeur(),
             'quantite' => $materiel->getQuantite(),
             'creationDate' => $materiel->getCreationDate()->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    #[Route('/materiel/{id}/pdf', name: 'materiel_pdf', methods: ['GET'])]
+    public function generatePdf(Materiel $materiel): Response
+    {
+        // Configurer DomPDF avec des options
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Initialiser DomPDF
+        $dompdf = new Dompdf($pdfOptions);
+        
+        // Créer le contenu HTML du PDF
+        $html = $this->renderView('materiel/pdf.html.twig', [
+            'materiel' => $materiel
+        ]);
+
+        // Charger le HTML dans DomPDF
+        $dompdf->loadHtml($html);
+
+        // (Optionnel) Configurer la taille et l'orientation du papier
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Rendre le PDF
+        $dompdf->render();
+
+        // Retourner le PDF sous forme de réponse
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="materiel_'.$materiel->getId().'.pdf"',
         ]);
     }
 }

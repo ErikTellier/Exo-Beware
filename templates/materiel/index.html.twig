@@ -3,6 +3,7 @@
 <head>
     <title>Materiel List</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.0/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css">
 <style>
         /* Style for the background overlay */
         #overlay {
@@ -59,13 +60,15 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+
     </style>
 
 </head>
 <body>
     <h1>Materiel List</h1>
     <button id="newButton" onclick="window.location.href='{{ path('materiel_new') }}'">New</button>
-    <table id="materielTable" class="display">
+    <table id="materielTable" class="display responsive nowrap" style="width:100%;">
         <thead>
             <tr>
                 <th style="display:none;">ID</th> <!-- Colonne cachée pour l'ID -->
@@ -87,12 +90,16 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.0/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#materielTable').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": "{{ path('materiel_data') }}",
+                "responsive": true,
+                "autoWidth": false, 
                 "columns": [
                     { "data": "id", "visible": false },
                     { "data": "nom" },
@@ -112,7 +119,7 @@
                         }
                     }
                 ],
-                "searching": true,         // Disable the search box
+                "searching": false,         // Disable the search box
                 "lengthChange": true,      // Disable the "Show X entries" dropdown
                 "paging": true,             // Enable pagination
                 "info": true               // Disable the "Showing X to Y of Z entries" info
@@ -140,6 +147,7 @@
                         <p>TVA Valeur: ${rowData.tvaValeur}</p>
                         <p>Quantité: ${rowData.quantite}</p>
                         <p>Date de création: ${rowData.creationDate}</p>
+                        <a href="/materiel/${materielId}/pdf" target="_blank">Télécharger le PDF</a>
                     `;
                     $('#materielDetails').html(details); // Injecter les détails dans la modal
                     $('#overlay').show();

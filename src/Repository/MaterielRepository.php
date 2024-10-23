@@ -16,28 +16,29 @@ class MaterielRepository extends ServiceEntityRepository
         parent::__construct($registry, Materiel::class);
     }
 
-    //    /**
-    //     * @return Materiel[] Returns an array of Materiel objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+public function decrement(Materiel $materiel): bool
+{
+    $currentQuantity = $materiel->getQuantite();
+    if ($currentQuantity > 0) {
+        $materiel->setQuantite($currentQuantity - 1);
 
-    //    public function findOneBySomeField($value): ?Materiel
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        // Si la quantité est à 0, supprimer le produit
+        if ($materiel->getQuantite() == 0) {
+            $this->getEntityManager()->remove($materiel);
+        }
+
+        // Sauvegarder les changements
+        $this->getEntityManager()->flush();
+
+        return true;  // Indique que l'opération a été réussie
+    }
+
+    return false;  // Indique qu'aucune décrémentation n'a été effectuée
+}
+
+public function increment(Materiel $materiel): void
+{
+    $materiel->setQuantite($materiel->getQuantite() + 1);
+    $this->getEntityManager()->flush();
+}
 }

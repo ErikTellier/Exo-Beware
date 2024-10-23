@@ -69,28 +69,19 @@ class MaterielController extends AbstractController
     #[Route('/decrement/{id}', name: 'decrement_materiel', methods: ['POST'])]
     public function decrementMateriel(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Récupérer le produit via le repository
         $materiel = $entityManager->getRepository(Materiel::class)->find($id);
 
         if (!$materiel) {
             return new JsonResponse(['status' => 'Produit non trouvé'], 404);
         }
 
-        // Décrémenter le stock
-        $currentQuantity = $materiel->getQuantite();
-        if ($currentQuantity > 0) {
-            $materiel->setQuantite($currentQuantity - 1);
+        $decrementSuccess = $entityManager->getRepository(Materiel::class)->decrement($materiel);
 
-            // Si le stock est à 0, supprimer le produit
-            if ($materiel->getQuantite() == 0) {
-                $entityManager->remove($materiel);
-            }
-
-            // Sauvegarder les changements
-            $entityManager->flush();
+        if ($decrementSuccess) {
+            return new JsonResponse(['status' => 'Quantité décrémentée avec succès']);
         }
 
-        return new JsonResponse(['status' => 'Quantité décrémentée avec succès']);
+        return new JsonResponse(['status' => 'Quantité déjà à 0'], 400);
     }
 
     #[Route('/increment/{id}', name: 'increment_materiel', methods: ['POST'])]
@@ -102,8 +93,7 @@ class MaterielController extends AbstractController
             return new JsonResponse(['status' => 'Produit non trouvé'], 404);
         }
 
-        $materiel->setQuantite($materiel->getQuantite() + 1);
-        $entityManager->flush();
+        $entityManager->getRepository(Materiel::class)->increment($materiel);
 
         return new JsonResponse(['status' => 'Quantité incrémentée avec succès']);
     }
@@ -125,6 +115,7 @@ class MaterielController extends AbstractController
 
         // Si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
+            $materiel->setCreationDate(new \DateTime());
             $entityManager->persist($materiel);
             $entityManager->flush();
 

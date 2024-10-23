@@ -46,11 +46,25 @@
         #closeModal:hover {
             background-color: #0056b3;
         }
+
+        /* Style for the New button */
+        #newButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 
 </head>
 <body>
     <h1>Materiel List</h1>
+    <button id="newButton" onclick="window.location.href='{{ path('materiel_new') }}'">New</button>
     <table id="materielTable" class="display">
         <thead>
             <tr>
@@ -86,14 +100,16 @@
                 "columns": [
                     { "data": "id", "visible": false },
                     { "data": "nom" },
-                    { "data": "prixHT" },
-                    { "data": "prixTTC" },
+                    { "data": "prixHT" , "type": "num" },
+                    { "data": "prixTTC" , "type": "num" },
                     { "data": "tvaLibelle" },  // Column for TVA libelle
-                    { "data": "tvaValeur" },
-                    { "data": "quantite" },
-                    { "data": "creationDate" },
+                    { "data": "tvaValeur", "type": "num"  },
+                    { "data": "quantite" , "type": "num" },
+                    { "data": "creationDate", "type": "date"  },
                     {   // Add buttons for each row
                         "data": null,
+                        "orderable": false,  // Désactive le tri
+                        "searchable": false, // Désactive la recherche
                         "render": function (data, type, row) {
                             return `
                                 <button class="view-btn" data-id="${data.nom}">Voir</button>

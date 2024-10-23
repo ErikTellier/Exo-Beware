@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Materiel;
 use App\Entity\Tva;
+use App\Form\MaterielType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -106,4 +107,33 @@ class MaterielController extends AbstractController
         return new JsonResponse(['status' => 'Quantité incrémentée avec succès']);
     }
     
+    #[Route('/new', name: 'materiel_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Créer une nouvelle instance de Materiel
+        $materiel = new Materiel();
+
+        // Créer le formulaire basé sur MaterielType
+        $form = $this->createForm(MaterielType::class, $materiel);
+
+        // Traiter la requête
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $materiel->setCreationDate(new \DateTime());
+            // Sauvegarder l'entité Materiel
+            $entityManager->persist($materiel);
+            $entityManager->flush();
+
+            // Redirection après la soumission (par exemple vers une liste ou un détail)
+            return $this->redirectToRoute('app_materiel'); // Remplace 'materiel_list' par ta route
+        }
+
+        // Rendre le formulaire dans la vue
+        return $this->render('materiel/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }

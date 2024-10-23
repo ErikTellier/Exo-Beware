@@ -112,8 +112,8 @@
                         "searchable": false, // Désactive la recherche
                         "render": function (data, type, row) {
                             return `
-                                <button class="view-btn" data-id="${data.nom}">Voir</button>
-                                <button class="edit-btn" data-id="${data.nom}">Modifier</button>
+                                <button class="view-btn" data-id="${data.id}">Voir</button>
+                                <button class="edit-btn" data-id="${data.id}">Modifier</button>
                                 <button class="decrement-btn" data-id="${data.id}">-</button>
                                 <button class="increment-btn" data-id="${data.id}">+</button>
                             `;
@@ -161,9 +161,9 @@
 
             // Event handler for edit button (does nothing for now)
             $(document).on('click', '.edit-btn', function() {
-                alert('Edit button clicked. Functionality not yet implemented.');
+                var materielId = $(this).data('id'); // Récupère l'ID du matériel depuis l'attribut data-id
+                window.location.href = `/edit/${materielId}`; // Redirige vers la page d'édition avec l'ID
             });
-
             // Gestion du bouton de décrémentation
             $(document).on('click', '.decrement-btn', function() {
                 var materielId = $(this).data('id');

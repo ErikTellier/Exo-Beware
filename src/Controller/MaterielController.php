@@ -129,4 +129,32 @@ class MaterielController extends AbstractController
             'newTvaForm' => $newTvaForm->createView(),  // Passer le formulaire de TVA à la vue
         ]);
     }
+
+    #[Route('/edit/{id}', name: 'materiel_edit')]
+    public function edit(Request $request, EntityManagerInterface $entityManager, Materiel $materiel): Response
+    {
+        // Créer le formulaire pour Materiel avec l'entité existante (chargée depuis l'URL avec l'id)
+        $form = $this->createForm(MaterielType::class, $materiel);
+
+        // Créer le formulaire pour TVA
+        $newTvaForm = $this->createForm(TvaType::class, new Tva());
+
+        // Traiter la requête du formulaire de Materiel
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Pas besoin de définir la date de création, mais vous pouvez mettre à jour les autres champs si nécessaire
+            $entityManager->flush(); // Mettre à jour l'entité dans la base de données
+
+            // Redirection après la soumission
+            return $this->redirectToRoute('app_materiel'); // Remplace par ta route de redirection
+        }
+
+        // Rendre le formulaire de Materiel et celui de TVA
+        return $this->render('materiel/new.html.twig', [
+            'form' => $form->createView(),
+            'newTvaForm' => $newTvaForm->createView(), // Passer le formulaire de TVA à la vue
+        ]);
+    }
 }

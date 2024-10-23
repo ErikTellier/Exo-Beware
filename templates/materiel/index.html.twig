@@ -98,17 +98,19 @@
                             return `
                                 <button class="view-btn" data-id="${data.nom}">Voir</button>
                                 <button class="edit-btn" data-id="${data.nom}">Modifier</button>
-                                <button class="decrement-btn" data-id="${data.id}">Décrémenter</button>
+                                <button class="decrement-btn" data-id="${data.id}">-</button>
+                                <button class="increment-btn" data-id="${data.id}">+</button>
                             `;
                         }
                     }
                 ],
-                "searching": false,         // Disable the search box
-                "lengthChange": false,      // Disable the "Show X entries" dropdown
+                "searching": true,         // Disable the search box
+                "lengthChange": true,      // Disable the "Show X entries" dropdown
                 "paging": true,             // Enable pagination
-                "info": false               // Disable the "Showing X to Y of Z entries" info
+                "info": true               // Disable the "Showing X to Y of Z entries" info
             });
         });
+
 
         // Event handler for view button
             $(document).on('click', '.view-btn', function() {
@@ -158,6 +160,20 @@
                     },
                     error: function() {
                         alert("Erreur lors de la décrémentation du stock.");
+                    }
+                });
+            });
+
+            $(document).on('click', '.increment-btn', function() {
+                var materielId = $(this).data('id');
+                $.ajax({
+                    url: `/increment/${materielId}`,
+                    method: 'POST',
+                    success: function() {
+                        $('#materielTable').DataTable().ajax.reload();
+                    },
+                    error: function() {
+                        alert("Erreur lors de l'incrémentation du stock.");
                     }
                 });
             });

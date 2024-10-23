@@ -90,5 +90,20 @@ class MaterielController extends AbstractController
 
         return new JsonResponse(['status' => 'Quantité décrémentée avec succès']);
     }
+
+    #[Route('/increment/{id}', name: 'increment_materiel', methods: ['POST'])]
+    public function incrementMateriel(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $materiel = $entityManager->getRepository(Materiel::class)->find($id);
+
+        if (!$materiel) {
+            return new JsonResponse(['status' => 'Produit non trouvé'], 404);
+        }
+
+        $materiel->setQuantite($materiel->getQuantite() + 1);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'Quantité incrémentée avec succès']);
+    }
     
 }

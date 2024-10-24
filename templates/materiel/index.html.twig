@@ -4,7 +4,12 @@
     <title>Materiel List</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.0/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+
+        body {
+        font-family: 'Inter', sans-serif; 
+        }
         /* Style for the background overlay */
         #overlay {
             position: fixed;
@@ -19,6 +24,7 @@
 
         /* Style for the modal */
         #materielModal {
+            text-align: center;
             display: none;
             position: fixed;
             top: 50%;
@@ -30,6 +36,17 @@
             z-index: 9999;
             width: 300px;
             border-radius: 8px;
+        }
+
+        /* Style for bold labels */
+        #materielDetails p strong {
+            font-weight: bold;
+        }
+
+        /* Style for pricing, ensuring it's formatted with the euro symbol */
+        #materielDetails p span.price {
+            font-weight: bold;
+            color: #007bff; /* You can customize the color as needed */
         }
 
         /* Style for close button */
@@ -61,7 +78,44 @@
             cursor: pointer;
         }
 
+        /* Style for the buttons in the table */
+        table button {
+            padding: 10px 20px;
+            background-color: #007bff; /* Same color as the modal close button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px; /* Small margin between buttons */
+        }
 
+        table td span.price {
+            color: #007bff; /* Blue color */
+            font-weight: bold; /* Optionally, you can make it bold */
+        }
+
+        /* Hover effect for the buttons */
+        table button:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        /* Style for decrement and increment buttons */
+        .decrement-btn {
+            background-color: #dc3545; /* Red for decrement */
+        }
+
+        .decrement-btn:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+        .increment-btn {
+            background-color: #28a745; /* Green for increment */
+        }
+
+        .increment-btn:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
     </style>
 
 </head>
@@ -101,10 +155,13 @@
                 "responsive": true,
                 "autoWidth": false, 
                 "columns": [
-                    { "data": "id", "visible": false },
-                    { "data": "nom" },
-                    { "data": "prixTTC" , "type": "num" },
-                    { "data": "quantite" , "type": "num" },
+                    { "data": "id",                "orderable": false, "visible": false },
+                    { "data": "nom",                "orderable": false },
+                    { "data": "prixTTC" ,                "orderable": false, "type": "num",             "render": function (data, type, row) {
+                // Format the price and add the euro symbol
+                return `<span class="price">${data.toFixed(2)} €</span>`;
+            }},
+                    { "data": "quantite" ,                "orderable": false, "type": "num" },
                     {   // Add buttons for each row
                         "data": null,
                         "orderable": false,  // Désactive le tri
@@ -119,7 +176,7 @@
                         }
                     }
                 ],
-                "searching": false,         // Disable the search box
+                "searching": true,         // Disable the search box
                 "lengthChange": true,      // Disable the "Show X entries" dropdown
                 "paging": true,             // Enable pagination
                 "info": true               // Disable the "Showing X to Y of Z entries" info
@@ -140,13 +197,13 @@
 
                     // Créer le contenu à afficher dans la popup
                     var details = `
-                        <p>Nom: ${rowData.nom}</p>
-                        <p>Prix HT: ${rowData.prixHT}</p>
-                        <p>Prix TTC: ${rowData.prixTTC}</p>
-                        <p>TVA Libelle: ${rowData.tvaLibelle}</p>
-                        <p>TVA Valeur: ${rowData.tvaValeur}</p>
-                        <p>Quantité: ${rowData.quantite}</p>
-                        <p>Date de création: ${rowData.creationDate}</p>
+                        <p><strong>Nom:</strong> ${rowData.nom}</p>
+                        <p><strong>Prix HT:</strong> <span class="price">${rowData.prixHT.toFixed(2)} €</span></p>
+                        <p><strong>Prix TTC:</strong> <span class="price">${rowData.prixTTC.toFixed(2)} €</span></p>
+                        <p><strong>TVA Libelle:</strong> ${rowData.tvaLibelle}</p>
+                        <p><strong>TVA Valeur:</strong> ${rowData.tvaValeur}%</p>
+                        <p><strong>Quantité:</strong> ${rowData.quantite}</p>
+                        <p><strong>Date de création:</strong> ${rowData.creationDate}</p>
                         <a href="/materiel/${materielId}/pdf" target="_blank">Télécharger le PDF</a>
                     `;
                     $('#materielDetails').html(details); // Injecter les détails dans la modal

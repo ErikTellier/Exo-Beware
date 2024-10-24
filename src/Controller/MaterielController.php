@@ -129,6 +129,7 @@ class MaterielController extends AbstractController
         return $this->render('materiel/new.html.twig', [
             'form' => $form->createView(),
             'newTvaForm' => $newTvaForm->createView(),  // Passer le formulaire de TVA à la vue
+            'isEdit' => false,
         ]);
     }
 
@@ -157,6 +158,7 @@ class MaterielController extends AbstractController
         return $this->render('materiel/new.html.twig', [
             'form' => $form->createView(),
             'newTvaForm' => $newTvaForm->createView(), // Passer le formulaire de TVA à la vue
+            'isEdit' => true,
         ]);
     }
 

@@ -10,7 +10,15 @@ TODO:
 - moved decrement and increment to repository : DONE
 - calcul prix auto dans formulaire new : DONE
 - formulaire ajout TVA : DONE
+- Generate product pdf : DONE
+- responsibe datatable : DONE
+- tout stylisé : DONE
 
-- responsibe datatable
-- tout stylisé
-- Generate product pdf
+## prompt
+
+Les petits plus, non obligatoires :
+
+- Lors de la décrémentation, si un article arrive à 0, un mail est envoyé à une adresse configurée pour
+  informer l'admin
+- Recherche sur le nom du produit dans la liste
+  Les efforts sur l’ergonomie et l’intégration seront pris en compte.

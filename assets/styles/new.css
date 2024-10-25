@@ -1,7 +1,7 @@
-
 body {
-    font-family: 'Inter', sans-serif; 
+    font-family: 'Inter', sans-serif;
 }
+
 #overlay {
     position: fixed;
     display: none;
@@ -13,8 +13,7 @@ body {
     z-index: 9998;
 }
 
-#materielModal {
-    text-align: center;
+#newTvaModal {
     display: none;
     position: fixed;
     top: 50%;
@@ -28,16 +27,7 @@ body {
     border-radius: 8px;
 }
 
-#materielDetails p strong {
-    font-weight: bold;
-}
-
-#materielDetails p span.price {
-    font-weight: bold;
-    color: #007bff;
-}
-
-#closeModal {
+#closeTvaModal {
     display: block;
     margin: 20px auto 0;
     padding: 10px 20px;
@@ -48,54 +38,69 @@ body {
     cursor: pointer;
 }
 
-#closeModal:hover {
+#closeTvaModal:hover {
     background-color: #0056b3;
 }
 
-#newButton {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
+#newTvaModal input,
+#newTvaModal button {
+    display: block;
+    margin: 10px auto;
+    width: 100%;
+    padding: 10px;
+}
+
+#newTvaModal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    text-align: center;
+}
+
+form input,
+form select,
+form button {
+    display: block;
+    width: 100%;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form button[type="submit"] {
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
-table button {
+form button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.btn-cancel {
+    display: block;
+    margin: 15px auto 0;
     padding: 10px 20px;
+    text-align: center;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    margin-right: 5px;
+    text-decoration: none;
+    font-size: 16px;
 }
 
-table td span.price {
-    color: #007bff;
-    font-weight: bold;
-}
-
-table button:hover {
+.btn-cancel:hover {
     background-color: #0056b3;
-}
-
-.decrement-btn {
-    background-color: #dc3545;
-}
-
-.decrement-btn:hover {
-    background-color: #c82333;
-}
-
-.increment-btn {
-    background-color: #28a745;
-}
-
-.increment-btn:hover {
-    background-color: #218838;
 }

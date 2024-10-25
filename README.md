@@ -1,17 +1,9 @@
-TODO:
+# RUN
 
-- i hate when the list move when i decrement or increment
-
-- fix search on mat list : DONE
-- fix try on mat list : DONE
-- Fix popup : DONE
-- working modification button : DONE
-- moved decrement and increment to repository : DONE
-- calcul prix auto dans formulaire new : DONE
-- formulaire ajout TVA : DONE
-- Generate product pdf : DONE
-- responsibe datatable : DONE
-- tout stylisé : DONE
+```
+docker-compose up -d
+symfony serve
+```
 
 ## prompt
 

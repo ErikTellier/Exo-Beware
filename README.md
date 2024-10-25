@@ -5,11 +5,18 @@ docker-compose up -d
 symfony serve
 ```
 
-## prompt
+## DONE
 
-Les petits plus, non obligatoires :
+- Datatables list
+- Entities TVA & Materiel
+- Search sur nom
+- Form Edit/new Materiel
+- Increment/decrement
+- popup
+- PDF export
+- Calcul Prix TVA
 
-- Lors de la décrémentation, si un article arrive à 0, un mail est envoyé à une adresse configurée pour
-  informer l'admin
+## TODO
 
-  Les efforts sur l’ergonomie et l’intégration seront pris en compte.
+- Email lorsque article arrive a 0
+- Edit TVA entry

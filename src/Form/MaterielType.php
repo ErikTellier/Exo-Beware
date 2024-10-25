@@ -22,7 +22,7 @@ class MaterielType extends AbstractType
                 'attr' => ['min' => 0],
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
-                        'value' => 0, // Pour s'assurer que la quantité est positive ou égale à zéro
+                        'value' => 0,
                         'message' => 'La quantité doit être un nombre positif ou égal à zéro.',
                     ]),
                 ],
@@ -30,11 +30,9 @@ class MaterielType extends AbstractType
             ->add('tva', EntityType::class, [
                 'class' => Tva::class,
                 'choice_label' => function (Tva $tva) {
-                    // Affiche le libellé et la valeur dans la liste déroulante
                     return sprintf('%s (%.2f%%)', $tva->getLibelle(), $tva->getValeur());
                 },
                 'choice_attr' => function (Tva $tva) {
-                    // Ajoute l'attribut data-tva contenant la valeur de la TVA
                     return ['data-tva' => $tva->getValeur()];
                 },
                 'placeholder' => 'Sélectionnez une TVA',

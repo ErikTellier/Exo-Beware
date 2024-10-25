@@ -1,256 +1,251 @@
 {# templates/materiel/new.html.twig #}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-<style>
-body {
-    font-family: 'Inter', sans-serif;
-}
-    /* Style for the background overlay */
-    #overlay {
-        position: fixed;
-        display: none;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 9998;
-    }
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
-    /* Style for the modal */
-    #newTvaModal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 9999;
-        width: 300px;
-        border-radius: 8px;
-    }
+        #overlay {
+            position: fixed;
+            display: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+        }
 
-    /* Style for close button */
-    #closeTvaModal {
-        display: block;
-        margin: 20px auto 0;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        #newTvaModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            width: 300px;
+            border-radius: 8px;
+        }
 
-    #closeTvaModal:hover {
-        background-color: #0056b3;
-    }
+        #closeTvaModal {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    /* Style for the form elements */
-    #newTvaModal input,
-    #newTvaModal button {
-        display: block;
-        margin: 10px auto;
-        width: 100%;
-        padding: 10px;
-    }
+        #closeTvaModal:hover {
+            background-color: #0056b3;
+        }
 
-    /* Style for the form heading */
-    #newTvaModal h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        #newTvaModal input,
+        #newTvaModal button {
+            display: block;
+            margin: 10px auto;
+            width: 100%;
+            padding: 10px;
+        }
 
-     /* Style for the main form */
-    form {
-        width: 300px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        text-align: center;
-    }
+        #newTvaModal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    /* Style for form input fields */
-    form input,
-    form select,
-    form button {
-        display: block;
-        width: 100%;
-        margin: 10px auto;
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
+        form {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
 
-    /* Style for the main form submit button */
-    form button[type="submit"] {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
+        form input,
+        form select,
+        form button {
+            display: block;
+            width: 100%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
 
-    form button[type="submit"]:hover {
-        background-color: #218838;
-    }
+        form button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-        /* Style for the cancel button */
-    .btn-cancel {
-        display: block;
-        margin: 15px auto 0;
-        padding: 10px 20px;
-        text-align: center;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none; /* Remove underline from the link */
-        font-size: 16px;
-    }
+        form button[type="submit"]:hover {
+            background-color: #218838;
+        }
 
-    .btn-cancel:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-    }
-</style>
+        .btn-cancel {
+            display: block;
+            margin: 15px auto 0;
+            padding: 10px 20px;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
 
+        .btn-cancel:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    {{ form_start(form) }}
+    <h1>{{ isEdit ? 'Modifier le Materiel' : 'Créer un nouveau Materiel' }}</h1>
+        {{ form_row(form.nom) }}
+        {{ form_row(form.prixHT) }}
+        {{ form_row(form.prixTTC) }}
+        {{ form_row(form.quantite) }}
 
+        <div>
+            {{ form_row(form.tva) }}
+            <button type="button" id="newTvaButton">Nouvelle TVA</button>
+        </div>
 
+        <button type="submit">{{ isEdit ? 'Mettre à jour' : 'Enregistrer' }}</button>
+        <a href="{{ path('app_materiel') }}" class="btn-cancel">Annuler</a>
+    {{ form_end(form) }}
 
-{{ form_start(form) }}
-<h1>{{ isEdit ? 'Modifier le Materiel' : 'Créer un nouveau Materiel' }}</h1>
-    {{ form_row(form.nom) }}
-    {{ form_row(form.prixHT) }}
-    {{ form_row(form.prixTTC) }}
-    {{ form_row(form.quantite) }}
+    <div id="overlay"></div>
 
-    <div>
-        {{ form_row(form.tva) }}
-        <button type="button" id="newTvaButton">Nouvelle TVA</button>
+    <div id="newTvaModal" style="display:none;">
+        <h2>Créer une nouvelle TVA</h2>
+        <form id="newTvaForm" method="post" action="{{ path('tva_new') }}">
+            {{ form_start(newTvaForm) }}
+                {{ form_row(newTvaForm.libelle) }}
+                {{ form_row(newTvaForm.valeur) }}
+                <button type="submit">Ajouter</button>
+            {{ form_end(newTvaForm) }}
+        </form>
+        <button id="closeTvaModal">Fermer</button>
     </div>
 
-    <button type="submit">{{ isEdit ? 'Mettre à jour' : 'Enregistrer' }}</button>
-    <a href="{{ path('app_materiel') }}" class="btn-cancel">Annuler</a>
-{{ form_end(form) }}
-
-<div id="overlay"></div>
-
-<!-- Popup Modal for new TVA -->
-<div id="newTvaModal" style="display:none;">
-    <h2>Créer une nouvelle TVA</h2>
-    <form id="newTvaForm" method="post" action="{{ path('tva_new') }}">
-        {{ form_start(newTvaForm) }}
-            {{ form_row(newTvaForm.libelle) }}
-            {{ form_row(newTvaForm.valeur) }}
-            <button type="submit">Ajouter</button>
-        {{ form_end(newTvaForm) }}
-    </form>
-    <button id="closeTvaModal">Fermer</button>
-</div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-// Fonction pour récupérer la TVA sélectionnée
-function getSelectedTva() {
-    var tvaSelect = $('#materiel_tva');
-    var selectedOption = tvaSelect.find('option:selected');
+    <script>
+        // Fonction pour récupérer la TVA sélectionnée
+        function getSelectedTva() {
+            var tvaSelect = $('#materiel_tva');
+            var selectedOption = tvaSelect.find('option:selected');
 
-    // Vérifie si aucune option n'est sélectionnée ou si l'option "placeholder" est sélectionnée
-    if (!selectedOption || selectedOption.val() === "") {
-        return 0; // TVA par défaut à zéro
-    }
-
-    var tvaValue = parseFloat(selectedOption.data('tva')); // Utilise l'attribut data-tva
-    return tvaValue;
-}
-
-// Fonction pour calculer le prix TTC en fonction du prix HT et de la TVA
-function calculateTtc(prixHT, tva) {
-    return (parseFloat(prixHT) * (1 + tva / 100)).toFixed(2);
-}
-
-// Fonction pour calculer le prix HT en fonction du prix TTC et de la TVA
-function calculateHt(prixTTC, tva) {
-    return (parseFloat(prixTTC) / (1 + tva / 100)).toFixed(2);
-}
-
-// Ajouter les écouteurs d'événements
-$('#materiel_prixHT').on('input', function() {
-    var prixHT = $(this).val();
-    var tva = getSelectedTva();
-    if (prixHT) {
-        $('#materiel_prixTTC').val(calculateTtc(prixHT, tva));
-    }
-});
-
-$('#materiel_prixTTC').on('input', function() {
-    var prixTTC = $(this).val();
-    var tva = getSelectedTva();
-    if (prixTTC) {
-        $('#materiel_prixHT').val(calculateHt(prixTTC, tva));
-    }
-});
-
-$('#materiel_tva').on('change', function() {
-    var prixHT = $('#materiel_prixHT').val();
-    var prixTTC = $('#materiel_prixTTC').val();
-    var tva = getSelectedTva();
-
-    if (prixHT) {
-        $('#materiel_prixTTC').val(calculateTtc(prixHT, tva));
-    } else if (prixTTC) {
-        $('#materiel_prixHT').val(calculateHt(prixTTC, tva));
-    }
-});
-
-$('#newTvaButton').on('click', function() {
-    $('#overlay').show();
-    $('#newTvaModal').show();
-});
-
-$('#closeTvaModal').on('click', function() {
-    $('#overlay').hide();
-    $('#newTvaModal').hide();
-});
-
-$('#newTvaForm').on('submit', function(event) {
-    event.preventDefault();  // Empêche la soumission par défaut du formulaire
-
-    var formData = new FormData(this);
-
-    $.ajax({
-        url: $(this).attr('action'),
-        type: 'POST',
-        data: formData,
-        processData: false,  // Ne pas traiter les données (car c'est un FormData)
-        contentType: false,  // Ne pas définir de type de contenu (car c'est un FormData)
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'  // Indique au serveur que c'est une requête AJAX
-        },
-        success: function(data) {
-            if (data.success) {
-                // Fermer la modal après succès
-                $('#overlay').hide();
-                $('#newTvaModal').hide();
-
-                // Ajouter la nouvelle TVA à la liste déroulante
-                var tvaSelect = $('#materiel_tva');
-                var newOption = new Option(`${data.libelle} (${data.valeur}%)`, data.id, true, true);
-                tvaSelect.append(newOption);
-
-                // Sélectionner la nouvelle TVA dans la liste
-                tvaSelect.val(data.id);
-            } else {
-                alert('Erreur lors de la création de la TVA');
+            if (!selectedOption || selectedOption.val() === "") {
+                return 0;
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Erreur:', error);
-            alert('Erreur lors de la création de la TVA');
+
+            var tvaValue = parseFloat(selectedOption.data('tva'));
+            return tvaValue;
         }
-    });
-});
-</script>
+
+        // Calcul TTC with TVA 
+        function calculateTtc(prixHT, tva) {
+            return (parseFloat(prixHT) * (1 + tva / 100)).toFixed(2);
+        }
+
+        // Calcul HT with TVA
+        function calculateHt(prixTTC, tva) {
+            return (parseFloat(prixTTC) / (1 + tva / 100)).toFixed(2);
+        }
+
+        $('#materiel_prixHT').on('input', function() {
+            var prixHT = $(this).val();
+            var tva = getSelectedTva();
+            if (prixHT) {
+                $('#materiel_prixTTC').val(calculateTtc(prixHT, tva));
+            }
+        });
+
+        $('#materiel_prixTTC').on('input', function() {
+            var prixTTC = $(this).val();
+            var tva = getSelectedTva();
+            if (prixTTC) {
+                $('#materiel_prixHT').val(calculateHt(prixTTC, tva));
+            }
+        });
+
+        $('#materiel_tva').on('change', function() {
+            var prixHT = $('#materiel_prixHT').val();
+            var prixTTC = $('#materiel_prixTTC').val();
+            var tva = getSelectedTva();
+
+            if (prixHT) {
+                $('#materiel_prixTTC').val(calculateTtc(prixHT, tva));
+            } else if (prixTTC) {
+                $('#materiel_prixHT').val(calculateHt(prixTTC, tva));
+            }
+        });
+
+        $('#newTvaButton').on('click', function() {
+            $('#overlay').show();
+            $('#newTvaModal').show();
+        });
+
+        $('#closeTvaModal').on('click', function() {
+            $('#overlay').hide();
+            $('#newTvaModal').hide();
+        });
+
+        //Add new TVA
+        $('#newTvaForm').on('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(data) {
+                    if (data.success) {
+                        $('#overlay').hide();
+                        $('#newTvaModal').hide();
+
+                        var tvaSelect = $('#materiel_tva');
+                        var newOption = new Option(`${data.libelle} (${data.valeur}%)`, data.id, true, true);
+                        tvaSelect.append(newOption);
+
+                        tvaSelect.val(data.id);
+                    } else {
+                        alert('Erreur lors de la création de la TVA');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erreur:', error);
+                    alert('Erreur lors de la création de la TVA');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

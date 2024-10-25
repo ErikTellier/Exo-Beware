@@ -25,17 +25,15 @@ class TvaController extends AbstractController
             $entityManager->persist($tva);
             $entityManager->flush();
 
-            // Récupérer l'URL d'origine envoyée dans le formulaire
             $redirectUrl = $request->request->get('redirect_url');
 
-            // Rediriger vers l'URL d'origine après la création de la TVA
             return new RedirectResponse($redirectUrl);
         }
 
-        // Si le formulaire est invalide, renvoyer vers la vue avec le formulaire
+        //if invalid
         return $this->render('materiel/new.html.twig', [
             'form' => $form->createView(),
-            'newTvaForm' => $form->createView(), // Passe aussi le formulaire de TVA à la vue
+            'newTvaForm' => $form->createView(),
         ]);
     }
 }

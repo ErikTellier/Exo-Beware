@@ -8,9 +8,8 @@
 <style>
 
         body {
-        font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', sans-serif; 
         }
-        /* Style for the background overlay */
         #overlay {
             position: fixed;
             display: none;
@@ -18,11 +17,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 9998;
         }
 
-        /* Style for the modal */
         #materielModal {
             text-align: center;
             display: none;
@@ -38,18 +36,15 @@
             border-radius: 8px;
         }
 
-        /* Style for bold labels */
         #materielDetails p strong {
             font-weight: bold;
         }
 
-        /* Style for pricing, ensuring it's formatted with the euro symbol */
         #materielDetails p span.price {
             font-weight: bold;
-            color: #007bff; /* You can customize the color as needed */
+            color: #007bff;
         }
 
-        /* Style for close button */
         #closeModal {
             display: block;
             margin: 20px auto 0;
@@ -65,7 +60,6 @@
             background-color: #0056b3;
         }
 
-        /* Style for the New button */
         #newButton {
             position: absolute;
             top: 20px;
@@ -78,43 +72,40 @@
             cursor: pointer;
         }
 
-        /* Style for the buttons in the table */
         table button {
             padding: 10px 20px;
-            background-color: #007bff; /* Same color as the modal close button */
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
-            margin-right: 5px; /* Small margin between buttons */
+            margin-right: 5px;
         }
 
         table td span.price {
-            color: #007bff; /* Blue color */
-            font-weight: bold; /* Optionally, you can make it bold */
+            color: #007bff;
+            font-weight: bold;
         }
 
-        /* Hover effect for the buttons */
         table button:hover {
-            background-color: #0056b3; /* Darker shade on hover */
+            background-color: #0056b3;
         }
 
-        /* Style for decrement and increment buttons */
         .decrement-btn {
-            background-color: #dc3545; /* Red for decrement */
+            background-color: #dc3545;
         }
 
         .decrement-btn:hover {
-            background-color: #c82333; /* Darker red on hover */
+            background-color: #c82333;
         }
 
         .increment-btn {
-            background-color: #28a745; /* Green for increment */
+            background-color: #28a745;
         }
 
         .increment-btn:hover {
-            background-color: #218838; /* Darker green on hover */
+            background-color: #218838;
         }
     </style>
 
@@ -125,7 +116,7 @@
     <table id="materielTable" class="display responsive nowrap" style="width:100%;">
         <thead>
             <tr>
-                <th style="display:none;">ID</th> <!-- Colonne cachée pour l'ID -->
+                <th style="display:none;">ID</th>
                 <th>Nom</th>
                 <th>Prix TTC</th>
                 <th>Quantité</th>
@@ -154,17 +145,31 @@
                 "responsive": true,
                 "autoWidth": false, 
                 "columns": [
-                    { "data": "id",                "orderable": false, "visible": false , "searchable": false },
-                    { "data": "nom",                "orderable": false },
-                    { "data": "prixTTC" ,                "orderable": false, "type": "num", "searchable": false,              "render": function (data, type, row) {
-                // Format the price and add the euro symbol
-                return `<span class="price">${data.toFixed(2)} €</span>`;
-            }},
-                    { "data": "quantite" ,                "orderable": false, "type": "num" , "searchable": false },
-                    {   // Add buttons for each row
+                    {   
+                        "data": "id",                
+                        "orderable": false, 
+                        "visible": false , 
+                        "searchable": false },
+                    {   
+                        "data": "nom",                
+                        "orderable": false },
+                    {   
+                        "data": "prixTTC" ,                
+                        "orderable": false, 
+                        "type": "num", 
+                        "searchable": false,              
+                        "render": function (data, type, row) {
+                            return `<span class="price">${data.toFixed(2)} €</span>`;
+                    }},
+                    {   
+                        "data": "quantite" ,                
+                        "orderable": false, 
+                        "type": "num" , 
+                        "searchable": false }, 
+                    {
                         "data": null,
-                        "orderable": false,  // Désactive le tri
-                        "searchable": false, // Désactive la recherche
+                        "orderable": false,
+                        "searchable": false,
                         "render": function (data, type, row) {
                             return `
                                 <button class="view-btn" data-id="${data.id}">Voir</button>
@@ -179,18 +184,15 @@
         });
 
 
-        // Event handler for view button
         $(document).on('click', '.view-btn', function() {
-            var materielId = $(this).data('id'); // Récupère l'ID du matériel depuis l'attribut data-id
+            var materielId = $(this).data('id');
 
-            // Effectue une requête Ajax pour récupérer les détails de l'élément spécifique
             $.ajax({
-                url: `/materiel/${materielId}`, // URL pour récupérer les données de l'élément avec cet ID
+                url: `/materiel/${materielId}`,
                 method: 'GET',
                 success: function(response) {
-                    var rowData = response; // Assure-toi que le serveur retourne les détails d'un seul élément
+                    var rowData = response;
 
-                    // Créer le contenu à afficher dans la popup
                     var details = `
                         <p><strong>Nom:</strong> ${rowData.nom}</p>
                         <p><strong>Prix HT:</strong> <span class="price">${rowData.prixHT.toFixed(2)} €</span></p>
@@ -201,7 +203,7 @@
                         <p><strong>Date de création:</strong> ${rowData.creationDate}</p>
                         <a href="/materiel/${materielId}/pdf" target="_blank">Télécharger le PDF</a>
                     `;
-                    $('#materielDetails').html(details); // Injecter les détails dans la modal
+                    $('#materielDetails').html(details);
                     $('#overlay').show();
                     $('#materielModal').show();
                 },
@@ -211,46 +213,43 @@
             });
         });
 
-            // Close modal
-            $('#closeModal').click(function() {
-                $('#overlay').hide();
-                $('#materielModal').hide();
-            });
+        $('#closeModal').click(function() {
+            $('#overlay').hide();
+            $('#materielModal').hide();
+        });
 
-            // Event handler for edit button (does nothing for now)
-            $(document).on('click', '.edit-btn', function() {
-                var materielId = $(this).data('id'); // Récupère l'ID du matériel depuis l'attribut data-id
-                window.location.href = `/edit/${materielId}`; // Redirige vers la page d'édition avec l'ID
-            });
-            // Gestion du bouton de décrémentation
-            $(document).on('click', '.decrement-btn', function() {
-                var materielId = $(this).data('id');
-                $.ajax({
-                    url: `/decrement/${materielId}`,
-                    method: 'POST',
-                    success: function() {
-                        // Rafraîchir le tableau après décrémentation
-                        $('#materielTable').DataTable().ajax.reload();
-                    },
-                    error: function() {
-                        alert("Erreur lors de la décrémentation du stock.");
-                    }
-                });
-            });
+        $(document).on('click', '.edit-btn', function() {
+            var materielId = $(this).data('id');
+            window.location.href = `/edit/${materielId}`;
+        });
 
-            $(document).on('click', '.increment-btn', function() {
-                var materielId = $(this).data('id');
-                $.ajax({
-                    url: `/increment/${materielId}`,
-                    method: 'POST',
-                    success: function() {
-                        $('#materielTable').DataTable().ajax.reload();
-                    },
-                    error: function() {
-                        alert("Erreur lors de l'incrémentation du stock.");
-                    }
-                });
+        $(document).on('click', '.decrement-btn', function() {
+            var materielId = $(this).data('id');
+            $.ajax({
+                url: `/decrement/${materielId}`,
+                method: 'POST',
+                success: function() {
+                    $('#materielTable').DataTable().ajax.reload();
+                },
+                error: function() {
+                    alert("Erreur lors de la décrémentation du stock.");
+                }
             });
+        });
+
+        $(document).on('click', '.increment-btn', function() {
+            var materielId = $(this).data('id');
+            $.ajax({
+                url: `/increment/${materielId}`,
+                method: 'POST',
+                success: function() {
+                    $('#materielTable').DataTable().ajax.reload();
+                },
+                error: function() {
+                    alert("Erreur lors de l'incrémentation du stock.");
+                }
+            });
+        });
     </script>
 </body>
 </html>

@@ -149,19 +149,18 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#materielTable').DataTable({
-                "processing": true,
                 "serverSide": true,
                 "ajax": "{{ path('materiel_data') }}",
                 "responsive": true,
                 "autoWidth": false, 
                 "columns": [
-                    { "data": "id",                "orderable": false, "visible": false },
+                    { "data": "id",                "orderable": false, "visible": false , "searchable": false },
                     { "data": "nom",                "orderable": false },
-                    { "data": "prixTTC" ,                "orderable": false, "type": "num",             "render": function (data, type, row) {
+                    { "data": "prixTTC" ,                "orderable": false, "type": "num", "searchable": false,              "render": function (data, type, row) {
                 // Format the price and add the euro symbol
                 return `<span class="price">${data.toFixed(2)} €</span>`;
             }},
-                    { "data": "quantite" ,                "orderable": false, "type": "num" },
+                    { "data": "quantite" ,                "orderable": false, "type": "num" , "searchable": false },
                     {   // Add buttons for each row
                         "data": null,
                         "orderable": false,  // Désactive le tri
@@ -175,11 +174,7 @@
                             `;
                         }
                     }
-                ],
-                "searching": true,         // Disable the search box
-                "lengthChange": true,      // Disable the "Show X entries" dropdown
-                "paging": true,             // Enable pagination
-                "info": true               // Disable the "Showing X to Y of Z entries" info
+                ]
             });
         });
 

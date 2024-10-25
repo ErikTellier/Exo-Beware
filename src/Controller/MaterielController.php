@@ -28,12 +28,22 @@ class MaterielController extends AbstractController
     {
         $start = $request->query->getInt('start', 0);
         $length = $request->query->getInt('length', 10);
+        $search = $request->get('search'); 
+        $filters = [ 
+            'query' => @$search['value'] 
+        ]; 
     
         // Query to get the list of all materials with pagination
         $queryBuilder = $em->getRepository(Materiel::class)->createQueryBuilder('m');
+
+        if (!empty($filters['query'])) {
+            $queryBuilder->andWhere('m.nom LIKE :search')
+                         ->setParameter('search', '%' . $filters['query'] . '%');
+        }
     
         // Get total records count
-        $totalRecords = $queryBuilder->select('COUNT(m.id)')->getQuery()->getSingleScalarResult();
+        $totalRecords = $em->getRepository(Materiel::class)->count([]);
+        $filteredRecords = $queryBuilder->select('COUNT(m.id)')->getQuery()->getSingleScalarResult();
     
         // Fetch paginated results
         $materiels = $queryBuilder
@@ -63,7 +73,7 @@ class MaterielController extends AbstractController
         return new JsonResponse([
             'draw' => $request->query->getInt('draw'),
             'recordsTotal' => $totalRecords,
-            'recordsFiltered' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
             'data' => $data,
         ]);
     }

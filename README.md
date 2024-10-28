@@ -2,6 +2,7 @@
 
 ```
 docker-compose up -d
+php bin/console messenger:consume async -vv
 symfony serve
 ```
 
@@ -15,8 +16,8 @@ symfony serve
 - popup
 - PDF export
 - Calcul Prix TVA
+- Email lorsque article arrive a 0
 
 ## TODO
 
-- Email lorsque article arrive a 0
 - Edit TVA entry
